@@ -25,6 +25,8 @@ import javafx.stage.FileChooser;
  */
 public class InsertImageDlgFXMLController implements Initializable {
 
+    private final String PLACEHOLDER = "placeholder";
+    private final String placeholder_src = getClass().getResource("imageplaceholder.png").toExternalForm();
     private InsertImageDlg primaryStage;
     private String src;
     private String alt;
@@ -44,6 +46,8 @@ public class InsertImageDlgFXMLController implements Initializable {
     private TextField widthTextField;
     @FXML
     private TextField heightTextField;
+    @FXML
+    private Button placeholderButton;
 
     public void setApp(InsertImageDlg stage) {
         this.primaryStage = stage;
@@ -51,7 +55,11 @@ public class InsertImageDlgFXMLController implements Initializable {
 
     public void initImage() {
         this.src = this.primaryStage.getSrc();
-        this.urlTextField.setText(src);
+        if (this.placeholder_src.equalsIgnoreCase(this.src)) {
+            this.urlTextField.setText(this.PLACEHOLDER);
+        } else {
+            this.urlTextField.setText(src);
+        }
         this.width = this.primaryStage.getImageWidth();
         this.widthTextField.setText(this.width + "");
         this.height = this.primaryStage.getImageHeight();
@@ -69,26 +77,31 @@ public class InsertImageDlgFXMLController implements Initializable {
     private void onOkButtonAction(ActionEvent event) {
         String text = this.urlTextField.getText();
         if (text == null || text.length() <= 0) {
-            FXOptionPane.showConfirmDialog(primaryStage, "No file selected.", FXOptionPane.Title.WARNING);
+            FXOptionPane.showMessageDialog(primaryStage, "No file selected.", FXOptionPane.Title.WARNING);
             this.urlTextField.requestFocus();
             return;
         }
 
         String w = this.widthTextField.getText();
         if (w == null || w.length() <= 0) {
-            FXOptionPane.showConfirmDialog(primaryStage, "Image width is zero.", FXOptionPane.Title.WARNING);
+            FXOptionPane.showMessageDialog(primaryStage, "Image width is zero.", FXOptionPane.Title.WARNING);
             this.widthTextField.requestFocus();
             return;
         }
 
         String h = this.heightTextField.getText();
         if (h == null || h.length() <= 0) {
-            FXOptionPane.showConfirmDialog(primaryStage, "Image height is zero.", FXOptionPane.Title.WARNING);
+            FXOptionPane.showMessageDialog(primaryStage, "Image height is zero.", FXOptionPane.Title.WARNING);
             this.heightTextField.requestFocus();
             return;
         }
 
-        this.primaryStage.setSrc(text.trim());
+        if (this.PLACEHOLDER.equalsIgnoreCase(text.trim())) {
+            this.primaryStage.setSrc(this.src);
+        } else {
+            this.primaryStage.setSrc(text.trim());
+        }
+
         this.primaryStage.setAlt(this.alt);
         this.primaryStage.setImageWidth(Integer.parseInt(w.trim()));
         this.primaryStage.setImageHeight(Integer.parseInt(h.trim()));
@@ -117,5 +130,12 @@ public class InsertImageDlgFXMLController implements Initializable {
                 FXOptionPane.showMessageDialog(primaryStage, "Cannot open the url.", FXOptionPane.Title.ERROR, ex);
             }
         }
+    }
+
+    @FXML
+    private void placeholderButtonAction(ActionEvent event) {
+        this.src = this.placeholder_src;
+        this.alt = "placeholder";
+        this.urlTextField.setText(PLACEHOLDER);
     }
 }

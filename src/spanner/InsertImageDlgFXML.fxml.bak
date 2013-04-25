@@ -39,11 +39,34 @@
       <right>
         <Accordion>
           <expandedPane>
-            <TitledPane fx:id="x1" animated="false" text="Size">
+            <TitledPane fx:id="x1" animated="false" minWidth="116.0" prefHeight="334.0" prefWidth="116.0" text="Size">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                    <VBox prefHeight="309.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <VBox prefHeight="309.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="201.0" spacing="10.0">
+                          <children>
+                            <Label text="Width: " />
+                            <TextField fx:id="widthTextField" prefWidth="67.0" />
+                            <Label text="pixels" />
+                          </children>
+                          <padding>
+                            <Insets left="10.0" />
+                          </padding>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="201.0" spacing="10.0">
+                          <children>
+                            <Label text="Height:" />
+                            <TextField fx:id="heightTextField" prefWidth="67.0" />
+                            <Label text="pixels" />
+                          </children>
+                          <padding>
+                            <Insets left="10.0" />
+                          </padding>
+                        </HBox>
+                      </children>
+                    </VBox>
                   </children>
                 </AnchorPane>
               </content>
@@ -60,18 +83,22 @@
         </Accordion>
       </right>
       <top>
-        <HBox alignment="CENTER" fillHeight="true" prefHeight="34.0" prefWidth="571.0" spacing="5.0">
+        <HBox alignment="CENTER_LEFT" fillHeight="true" prefHeight="34.0" prefWidth="571.0" spacing="5.0">
           <children>
             <Label prefHeight="27.0" prefWidth="39.0" text="  File:" />
-            <TextField fx:id="urlTextField" prefHeight="27.0" prefWidth="444.0" />
-            <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenButtonAction" prefHeight="19.0" prefWidth="50.0" text="Open" textAlignment="LEFT" HBox.hgrow="ALWAYS">
+            <TextField fx:id="urlTextField" prefHeight="27.0" prefWidth="319.0" />
+            <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenButtonAction" prefHeight="21.0" prefWidth="64.0" text="Open" textAlignment="LEFT" HBox.hgrow="ALWAYS">
               <HBox.margin>
                 <Insets left="5.0" right="5.0" />
               </HBox.margin>
             </Button>
+            <Button mnemonicParsing="false" text="Placeholder" />
           </children>
         </HBox>
       </top>
     </BorderPane>
   </children>
+  <padding>
+    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+  </padding>
 </AnchorPane>
