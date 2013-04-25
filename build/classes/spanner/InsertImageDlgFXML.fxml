@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="416.0002999999924" prefWidth="570.0000999999975" xmlns:fx="http://javafx.com/fxml" fx:controller="spanner.InsertImageDlgFXMLController">
+  <children>
+    <BorderPane prefHeight="416.0002999999924" prefWidth="570.0000999999975" snapToPixel="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <FlowPane alignment="TOP_RIGHT" columnHalignment="CENTER" hgap="10.0" prefHeight="27.0" prefWidth="571.0">
+          <children>
+            <Button fx:id="okButton" defaultButton="true" mnemonicParsing="false" onAction="#onOkButtonAction" prefWidth="51.0" text="Ok" />
+            <Button fx:id="cancelButton" cancelButton="true" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onCancelButtonAction" text="Cancel" />
+          </children>
+          <padding>
+            <Insets top="4.0" />
+          </padding>
+          <BorderPane.margin>
+            <Insets right="20.0" />
+          </BorderPane.margin>
+        </FlowPane>
+      </bottom>
+      <center>
+        <TitledPane animated="false" collapsible="false" prefHeight="356.0" prefWidth="367.0" text="Preview:">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <WebView prefHeight="181.0" prefWidth="364.0" style="border:1px solid black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </TitledPane>
+      </center>
+      <right>
+        <Accordion>
+          <expandedPane>
+            <TitledPane fx:id="x1" animated="false" minWidth="116.0" prefHeight="334.0" prefWidth="116.0" text="Size">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <VBox prefHeight="309.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="201.0" spacing="10.0">
+                          <children>
+                            <Label text="Width: " />
+                            <TextField fx:id="widthTextField" prefWidth="67.0" />
+                            <Label text="pixels" />
+                          </children>
+                          <padding>
+                            <Insets left="10.0" />
+                          </padding>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="201.0" spacing="10.0">
+                          <children>
+                            <Label text="Height:" />
+                            <TextField fx:id="heightTextField" prefWidth="67.0" />
+                            <Label text="pixels" />
+                          </children>
+                          <padding>
+                            <Insets left="10.0" />
+                          </padding>
+                        </HBox>
+                      </children>
+                    </VBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </TitledPane>
+          </expandedPane>
+          <panes>
+            <fx:reference source="x1" />
+            <TitledPane animated="false" text="Floating">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </TitledPane>
+          </panes>
+        </Accordion>
+      </right>
+      <top>
+        <HBox alignment="CENTER" fillHeight="true" prefHeight="34.0" prefWidth="571.0" spacing="5.0">
+          <children>
+            <Label prefHeight="27.0" prefWidth="39.0" text="  File:" />
+            <TextField fx:id="urlTextField" prefHeight="27.0" prefWidth="444.0" />
+            <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenButtonAction" prefHeight="19.0" prefWidth="50.0" text="Open" textAlignment="LEFT" HBox.hgrow="ALWAYS">
+              <HBox.margin>
+                <Insets left="5.0" right="5.0" />
+              </HBox.margin>
+            </Button>
+          </children>
+        </HBox>
+      </top>
+    </BorderPane>
+  </children>
+  <padding>
+    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+  </padding>
+</AnchorPane>
