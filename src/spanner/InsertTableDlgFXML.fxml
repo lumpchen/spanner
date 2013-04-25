@@ -7,5 +7,27 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml">
-    
+  <children>
+    <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <right>
+        <Accordion>
+          <expandedPane>
+            <TitledPane fx:id="x1" animated="false" text="Table">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </TitledPane>
+          </expandedPane>
+          <panes>
+            <fx:reference source="x1" />
+            <TitledPane animated="false" text="Table Header">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </TitledPane>
+          </panes>
+        </Accordion>
+      </right>
+    </BorderPane>
+  </children>
 </AnchorPane>
