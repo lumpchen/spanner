@@ -90,6 +90,10 @@ public class WKEditor extends Region {
         return accordion;
     }
 
+    public String getHtml() {
+        return this.browser.getHtml();
+    }
+
     public void openFile(File f) {
         this.browser.openFile(f);
     }

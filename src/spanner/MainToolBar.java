@@ -5,11 +5,14 @@
 package spanner;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import spanner.fo.FopAgent;
 
 /**
  *
@@ -53,11 +57,19 @@ public class MainToolBar extends GridPane {
             }
         });
 
-        Button button = new Button();
-        button.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("preview.png"))));
+        this.bar.getItems().add(new Separator());
+
+        Button previewButton = new Button();
+        previewButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("preview.png"))));
+        previewButton.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event t) {
+                actionPreviewButton(t);
+            }
+        });
 
         this.bar.getItems().add(openButton);
-        this.bar.getItems().add(button);
+        this.bar.getItems().add(previewButton);
         this.bar.setPrefHeight(60);
     }
 
@@ -71,6 +83,16 @@ public class MainToolBar extends GridPane {
         if (openFile != null) {
             primaryStage.setTitle(openFile.getAbsolutePath());
             edtor.openFile(openFile);
+        }
+    }
+
+    private void actionPreviewButton(Event t) {
+        String html = this.edtor.getHtml();
+        try {
+            FopAgent.preview(html, "c:/000.pdf");
+        } catch (WKException ex) {
+            Logger.getLogger(MainToolBar.class.getName()).log(Level.SEVERE, null, ex);
+            FXOptionPane.showMessageDialog(primaryStage, "Failed to preview.", FXOptionPane.Title.WARNING);
         }
     }
 

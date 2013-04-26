@@ -106,9 +106,16 @@ public class WKBrowser {
             @Override
             public void run() {
                 nodeTree.showDom(webEngine.getDocument());
-                htmlTextPane.setText(webPage.getHtml(webPage.getMainFrame()));
+                htmlTextPane.setText(getHtml());
             }
         });
+    }
+
+    public String getHtml() {
+        if (this.webPage != null) {
+            return webPage.getHtml(webPage.getMainFrame());
+        }
+        return null;
     }
 
     public boolean isCommandEnabled(String paramString) {
@@ -175,11 +182,11 @@ public class WKBrowser {
             Element tr = doc.createElement("tr");
             tr.appendChild(doc.createTextNode("1111"));
             tableEle.appendChild(tr);
-            
+
             tr = doc.createElement("tr");
             tr.appendChild(doc.createTextNode("1111"));
             tableEle.appendChild(tr);
-            
+
             tr = doc.createElement("tr");
             tr.appendChild(doc.createTextNode("1111"));
             tableEle.appendChild(tr);
