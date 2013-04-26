@@ -326,6 +326,10 @@ public class WKToolBar extends GridPane {
 
     private void handleInsertImageEvent(ActionEvent e) {
         try {
+            if (!this.browser.enableInsertElement()) {
+                FXOptionPane.showMessageDialog(stage, "Not found insertion point.", FXOptionPane.Title.ERROR);
+                return;
+            }
             InsertImageDlg dlg = new InsertImageDlg(stage);
             dlg.showAndWait();
             if (dlg.isOk()) {

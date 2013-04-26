@@ -185,10 +185,19 @@ public class WKBrowser {
         }
     }
 
+    public boolean enableInsertElement() {
+        Object selection = webEngine.executeScript("window.getSelection().focusNode");
+        if (selection != null && selection instanceof Node) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void insertImageNode(String src, String alt, int width, int height,
             String style) throws WKException {
         Object selection = webEngine.executeScript("window.getSelection().focusNode");
-        if (selection != null) {
+        if (selection != null && selection instanceof Node) {
             try {
                 System.out.println(selection.getClass().getName());
                 Document doc = webEngine.getDocument();

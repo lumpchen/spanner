@@ -87,12 +87,12 @@
           <children>
             <Label prefHeight="27.0" prefWidth="39.0" text="  File:" />
             <TextField fx:id="urlTextField" prefHeight="27.0" prefWidth="319.0" />
-            <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenButtonAction" prefHeight="21.0" prefWidth="64.0" text="Open" textAlignment="LEFT" HBox.hgrow="ALWAYS">
+            <Button fx:id="openButton" defaultButton="false" mnemonicParsing="false" onAction="#onOpenButtonAction" prefHeight="21.0" prefWidth="64.0" text="Open" textAlignment="LEFT" HBox.hgrow="ALWAYS">
               <HBox.margin>
                 <Insets left="5.0" right="5.0" />
               </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Placeholder" />
+            <Button fx:id="placeholderButton" mnemonicParsing="false" onAction="#placeholderButtonAction" text="Placeholder" />
           </children>
         </HBox>
       </top>
