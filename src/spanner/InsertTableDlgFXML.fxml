@@ -2,17 +2,33 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml">
+<AnchorPane id="AnchorPane" prefHeight="475.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="spanner.InsertTableDlgFXMLController">
   <children>
     <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <HBox alignment="CENTER_RIGHT" prefHeight="32.0" prefWidth="600.0" spacing="10.0">
+          <children>
+            <Button fx:id="okButton" cancelButton="false" defaultButton="true" mnemonicParsing="false" onAction="#okButtonAction" text="   Ok   " />
+            <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancel" />
+          </children>
+          <padding>
+            <Insets right="20.0" />
+          </padding>
+        </HBox>
+      </bottom>
+      <left>
+        <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" />
+      </left>
       <right>
         <Accordion>
           <expandedPane>
-            <TitledPane fx:id="x1" animated="false" text="Table">
+            <TitledPane fx:id="x1" animated="false" text="Styled">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
@@ -20,7 +36,7 @@
           </expandedPane>
           <panes>
             <fx:reference source="x1" />
-            <TitledPane animated="false" text="Table Header">
+            <TitledPane animated="false" text="Properties">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
@@ -28,6 +44,13 @@
           </panes>
         </Accordion>
       </right>
+      <top>
+        <ToolBar>
+          <items>
+            <Button mnemonicParsing="false" text="A" />
+          </items>
+        </ToolBar>
+      </top>
     </BorderPane>
   </children>
 </AnchorPane>

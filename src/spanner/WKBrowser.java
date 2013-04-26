@@ -28,7 +28,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.w3c.dom.html.HTMLElement;
+import org.w3c.dom.html.HTMLTableElement;
 
 /**
  *
@@ -161,13 +163,28 @@ public class WKBrowser {
         return this.webView.isFocused();
     }
 
-    public void insertTableNode(HTMLTable table) throws WKException {
-
+    public void insertTableNode(HTMLTableSetting table) throws WKException {
         Object selection = webEngine.executeScript("window.getSelection().focusNode");
-        if (selection != null) {
-            int row = table.getRow();
-            int col = table.getCol();
+        if (selection != null && selection instanceof Node) {
+            Document doc = webEngine.getDocument();
+            HTMLTableElement tableEle = (HTMLTableElement) doc.createElement("table");
+            tableEle.setWidth("400");
+            tableEle.setTitle("23423");
+            tableEle.setBgColor("red");
+            tableEle.setBorder("5");
+            Element tr = doc.createElement("tr");
+            tr.appendChild(doc.createTextNode("1111"));
+            tableEle.appendChild(tr);
+            
+            tr = doc.createElement("tr");
+            tr.appendChild(doc.createTextNode("1111"));
+            tableEle.appendChild(tr);
+            
+            tr = doc.createElement("tr");
+            tr.appendChild(doc.createTextNode("1111"));
+            tableEle.appendChild(tr);
 
+            insertTableNode((Node) selection, tableEle);
         } else {
             throw new WKException(WKNodeBuilder.class, "Not found insertion point.", null);
         }
@@ -178,6 +195,7 @@ public class WKBrowser {
             TextImpl textNode = (TextImpl) focusNode;
             Node parent = textNode.getParentNode();
             Integer offset = (Integer) webEngine.executeScript("window.getSelection().focusOffset");
+            parent.appendChild(table);
         } else {
             Integer offset = (Integer) webEngine.executeScript("window.getSelection().focusOffset");
             NodeList children = focusNode.getChildNodes();
@@ -195,7 +213,7 @@ public class WKBrowser {
     }
 
     public void insertImageNode(String src, String alt, int width, int height,
-            String style) throws WKException {
+            String floating) throws WKException {
         Object selection = webEngine.executeScript("window.getSelection().focusNode");
         if (selection != null && selection instanceof Node) {
             try {
@@ -206,10 +224,9 @@ public class WKBrowser {
                 img.setAttribute("alt", alt);
                 img.setAttribute("height", height + "");
                 img.setAttribute("width", width + "");
+                img.setAttribute("style", "float:" + floating);
 
-                img.setAttribute("ondblclick", "app.ondblclickImage()");
-                img.setAttribute("onmouseover", "app.onmouseoverImage()");
-                img.setAttribute("onmouseout", "app.onmouseoutImage()");
+                this.addCallbackForImage(img);
 
                 this.insertImageNode((Node) selection, img);
             } catch (Exception e) {
@@ -218,6 +235,13 @@ public class WKBrowser {
         } else {
             throw new WKException(WKNodeBuilder.class, "Not found insertion point.", null);
         }
+    }
+
+    private void addCallbackForImage(Element img) {
+        img.setAttribute("draggable", "false");
+        img.setAttribute("ondblclick", "app.ondblclickImage()");
+        img.setAttribute("onmouseover", "app.onmouseoverImage()");
+        img.setAttribute("onmouseout", "app.onmouseoutImage()");
     }
 
     private void insertImageNode(Node focusNode, Element img) {
@@ -258,12 +282,12 @@ public class WKBrowser {
     }
 
     private HTMLImageElementImpl getSelectedImage() {
-        Object e = this.webView.getEngine().executeScript("window.event.type");
+        Object e = this.webEngine.executeScript("window.event.type");
         if (e == null) {
             return null;
         }
 
-        Object srcEle = this.webView.getEngine().executeScript("window.event.srcElement");
+        Object srcEle = this.webEngine.executeScript("window.event.srcElement");
         if (srcEle != null) {
             if (srcEle instanceof HTMLImageElementImpl) {
                 return (HTMLImageElementImpl) srcEle;
@@ -274,8 +298,8 @@ public class WKBrowser {
 
     public class JavaApp {
 
-        private String oldBorder;
-        private String mouseOverBorder = "border:1px solid blue";
+        private HTMLImageElementImpl selImg;
+        private String opacity;
 
         public void ondblclickImage() {
             HTMLImageElementImpl selImg = getSelectedImage();
@@ -295,7 +319,7 @@ public class WKBrowser {
                     selImg.setSrc(src);
                     selImg.setWidth(w + "");
                     selImg.setHeight(h + "");
-                    selImg.setAlign("right");
+                    selImg.getStyle().setProperty("float", dlg.getFloat(), "");
                 }
             } catch (IOException ex) {
                 Logger.getLogger(WKBrowser.class.getName()).log(Level.SEVERE, null, ex);
@@ -303,23 +327,31 @@ public class WKBrowser {
         }
 
         public void onmouseoverImage() {
-            HTMLImageElementImpl selImg = getSelectedImage();
+            selImg = getSelectedImage();
             if (selImg == null) {
                 return;
             }
-            this.oldBorder = selImg.getBorder();
-            selImg.setAttribute("style", mouseOverBorder);
+            opacity = selImg.getStyle().getPropertyValue("opacity");
+            if (opacity == null) {
+                selImg.getStyle().setProperty("opacity", "0.5", "");
+            } else {
+                Integer op = Integer.parseInt(opacity);
+                if (op <= 0.5) {
+                    selImg.getStyle().setProperty("opacity", op * 2 + "", "");
+                } else {
+                    selImg.getStyle().setProperty("opacity", op / 2 + "", "");
+                }
+            }
         }
 
         public void onmouseoutImage() {
-            HTMLImageElementImpl selImg = getSelectedImage();
             if (selImg == null) {
                 return;
             }
-            if (this.oldBorder != null) {
-                selImg.setAttribute("style", this.oldBorder);
+            if (opacity != null) {
+                selImg.getStyle().setProperty("opacity", opacity, "");
             } else {
-                selImg.removeAttribute("style");
+                selImg.getStyle().removeProperty("opacity");
             }
         }
     }

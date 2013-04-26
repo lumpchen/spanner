@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -30,7 +31,7 @@
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
-                <WebView prefHeight="181.0" prefWidth="364.0" style="border:1px solid black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <WebView fx:id="webView" prefHeight="181.0" prefWidth="364.0" style="border:1px solid black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
               </children>
             </AnchorPane>
           </content>
@@ -39,7 +40,7 @@
       <right>
         <Accordion>
           <expandedPane>
-            <TitledPane fx:id="x1" animated="false" minWidth="116.0" prefHeight="334.0" prefWidth="116.0" text="Size">
+            <TitledPane fx:id="x1" animated="false" minWidth="116.0" prefHeight="334.0" prefWidth="116.0" text="Properties">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -65,6 +66,20 @@
                             <Insets left="10.0" />
                           </padding>
                         </HBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="201.0" spacing="10.0">
+                          <children>
+                            <Label prefWidth="39.0" text="Float:" />
+                            <ComboBox fx:id="floatComboBox" prefWidth="111.0">
+                              <items>
+                                <FXCollections fx:factory="observableArrayList" />
+                              </items>
+                            </ComboBox>
+                          </children>
+                          <padding>
+                            <Insets left="10.0" />
+                          </padding>
+                        </HBox>
                       </children>
                     </VBox>
                   </children>
@@ -74,7 +89,7 @@
           </expandedPane>
           <panes>
             <fx:reference source="x1" />
-            <TitledPane animated="false" text="Floating">
+            <TitledPane animated="false" text="Dynamic setting">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>

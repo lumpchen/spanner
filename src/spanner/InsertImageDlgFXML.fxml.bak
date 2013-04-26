@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -39,7 +40,7 @@
       <right>
         <Accordion>
           <expandedPane>
-            <TitledPane fx:id="x1" animated="false" minWidth="116.0" prefHeight="334.0" prefWidth="116.0" text="Size">
+            <TitledPane fx:id="x1" animated="false" minWidth="116.0" prefHeight="334.0" prefWidth="116.0" text="Properties">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -65,6 +66,21 @@
                             <Insets left="10.0" />
                           </padding>
                         </HBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="201.0" spacing="10.0">
+                          <children>
+                            <Label prefWidth="39.0" text="Float:" />
+                            <ComboBox fx:id="floatComboBox" prefWidth="111.0">
+                              <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                </FXCollections>
+                              </items>
+                            </ComboBox>
+                          </children>
+                          <padding>
+                            <Insets left="10.0" />
+                          </padding>
+                        </HBox>
                       </children>
                     </VBox>
                   </children>
@@ -74,7 +90,7 @@
           </expandedPane>
           <panes>
             <fx:reference source="x1" />
-            <TitledPane animated="false" text="Floating">
+            <TitledPane animated="false" text="Dynamic setting">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
@@ -92,7 +108,7 @@
                 <Insets left="5.0" right="5.0" />
               </HBox.margin>
             </Button>
-            <Button fx:id="placeholderButton" mnemonicParsing="false" onAction="#placeholderButtonAction" text="Placeholder" />
+            <Button fx:id="placeholderButton" mnemonicParsing="false" onAction="#placeholderButtonAction" prefHeight="20.999900000002526" text="Placeholder" />
           </children>
         </HBox>
       </top>

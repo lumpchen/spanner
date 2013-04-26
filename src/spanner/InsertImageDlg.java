@@ -24,6 +24,7 @@ public class InsertImageDlg extends Stage {
     private boolean isOk = false;
     private int width;
     private int height;
+    private String floating;
     private InsertImageDlgFXMLController controller;
 
     public InsertImageDlg(Stage primaryStage) throws IOException {
@@ -56,11 +57,11 @@ public class InsertImageDlg extends Stage {
     public String getSrc() {
         return this.src;
     }
-    
+
     public void setSrc(String src) {
         this.src = src;
     }
-    
+
     public String getAlt() {
         return this.alt;
     }
@@ -85,6 +86,14 @@ public class InsertImageDlg extends Stage {
         this.height = h;
     }
 
+    public void setFloat(String floating) {
+        this.floating = floating;
+    }
+
+    public String getFloat() {
+        return this.floating;
+    }
+
     public void setImage(HTMLImageElementImpl img) {
         if (img == null) {
             return;
@@ -92,7 +101,7 @@ public class InsertImageDlg extends Stage {
         this.src = img.getSrc();
         this.width = Integer.parseInt(img.getWidth());
         this.height = Integer.parseInt(img.getHeight());
-
+        this.floating = img.getStyle().getPropertyValue("float");
         this.controller.initImage();
     }
 }

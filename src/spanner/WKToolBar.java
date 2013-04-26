@@ -172,7 +172,6 @@ public class WKToolBar extends GridPane {
             public void handle(Event t) {
                 final KeyEvent e = (KeyEvent) t;
                 handleKeyPressedEvent(e);
-                browser.updateView();
             }
         });
 
@@ -181,6 +180,7 @@ public class WKToolBar extends GridPane {
             public void handle(Event t) {
                 final KeyEvent e = (KeyEvent) t;
                 handleKeyReleasedEvent(e);
+                browser.updateView();
             }
         });
 
@@ -337,9 +337,9 @@ public class WKToolBar extends GridPane {
                 String alt = dlg.getAlt();
                 int w = dlg.getImageWidth();
                 int h = dlg.getImageHeight();
-                String style = null;
-
-                this.browser.insertImageNode(src, alt, w, h, null);
+                String floating = dlg.getFloat();
+                this.browser.insertImageNode(src, alt, w, h, floating);
+                this.browser.updateView();
             }
         } catch (WKException | IOException ex) {
             Logger.getLogger(WKToolBar.class.getName()).log(Level.SEVERE, null, ex);
@@ -348,6 +348,22 @@ public class WKToolBar extends GridPane {
     }
 
     private void handleInsertTableEvent(ActionEvent e) {
+        try {
+            if (!this.browser.enableInsertElement()) {
+                FXOptionPane.showMessageDialog(stage, "Not found insertion point.", FXOptionPane.Title.ERROR);
+                return;
+            }
+            InsertTableDlg dlg = new InsertTableDlg(stage);
+            dlg.showAndWait();
+            if (dlg.isOk()) {
+                HTMLTableSetting table = dlg.getHTMLTableSetting();
+                this.browser.insertTableNode(table);
+                this.browser.updateView();
+            }
+        } catch (WKException | IOException ex) {
+            Logger.getLogger(WKToolBar.class.getName()).log(Level.SEVERE, null, ex);
+            FXOptionPane.showMessageDialog(stage, "", FXOptionPane.Title.ERROR, ex);
+        }
     }
 
     private void handleKeyPressedEvent(final KeyEvent e) {

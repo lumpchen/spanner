@@ -54,7 +54,7 @@ public class MainToolBar extends GridPane {
         });
 
         Button button = new Button();
-        button.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("spanner_0.png"))));
+        button.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("preview.png"))));
 
         this.bar.getItems().add(openButton);
         this.bar.getItems().add(button);
