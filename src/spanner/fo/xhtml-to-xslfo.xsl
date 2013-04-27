@@ -297,13 +297,13 @@
                 <fo:table-row>
                   <fo:table-cell>
                     <fo:block text-align="start">
-                      developerWorks loves you!
+                      This is heading!
                     </fo:block>
                   </fo:table-cell>
                   <fo:table-cell>
                     <fo:block text-align="end" font-weight="bold" 
                       font-family="monospace">
-                      ibm.com/developerWorks
+                      Spanner
                     </fo:block>
                   </fo:table-cell>
                 </fo:table-row>
@@ -345,12 +345,12 @@
                   <fo:table-cell>
                     <fo:block text-align="start" font-weight="bold" 
                       font-family="monospace">
-                      ibm.com/developerWorks
+                      This is footer!
                     </fo:block>
                   </fo:table-cell>
                   <fo:table-cell>
                     <fo:block text-align="end">
-                      developerWorks loves you!
+                      Spanner
                     </fo:block>
                   </fo:table-cell>
                 </fo:table-row>
@@ -499,12 +499,12 @@
       <xsl:apply-templates select="/html/head/title"/>
       <fo:block space-after="12pt" line-height="17pt" 
         font-size="14pt" text-align="center">
-        developerWorks loves you!
+        Welcome spanner!
       </fo:block>
       <fo:block space-after="24pt" line-height="17pt" 
         font-size="14pt" text-align="center" font-weight="bold" 
         font-family="monospace">
-        ibm.com/developerWorks
+        lumpchen@gmail.com
       </fo:block>
           
   <!-- ============================================
@@ -1523,12 +1523,6 @@
       line-height="21pt" font-size="18pt" text-align="start">
       Table of Contents
     </fo:block>
-    <fo:block line-height="11pt" font-size="8pt" 
-      space-after="6pt">
-      If you're viewing this document online, you can 
-      click any of the topics below to link directly to 
-      that section.
-    </fo:block>
     <xsl:for-each select="/html/body//h1 |
                           /html/body//h2 | 
                           /html/body//h3 |
@@ -1610,99 +1604,99 @@
     previous versions of FOP. 
     =============================================== -->
 
-  <xsl:template name="generate-bookmarks">
-    <fo:bookmark-tree>
-      <fo:bookmark internal-destination="TableOfContents">
-        <fo:bookmark-title>Table of Contents</fo:bookmark-title>
-      </fo:bookmark>
-      <xsl:for-each select="/html/body//h1">
-        <xsl:variable name="current-h1" select="generate-id()"/>
-        <fo:bookmark starting-state="hide">
-          <xsl:attribute name="internal-destination">
-            <xsl:choose>
-              <xsl:when test="@id">
-                <xsl:value-of select="@id"/>
-              </xsl:when>
-              <xsl:when test="name(preceding-sibling::*[1]) = 'a' and
-                              preceding-sibling::*[1][@name]">
-                <xsl:value-of select="preceding-sibling::*[1]/@name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$current-h1"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:attribute>
-          <fo:bookmark-title>
-            <xsl:value-of select="."/>
-          </fo:bookmark-title>
-          <xsl:for-each select="following-sibling::h2">
-            <xsl:variable name="current-h2" select="generate-id()"/>
-            <xsl:if 
-              test="generate-id(preceding-sibling::h1[1]) = $current-h1">
-              <fo:bookmark starting-state="hide">
-                <xsl:attribute name="internal-destination">
-                  <xsl:choose>
-                    <xsl:when test="@id">
-                      <xsl:value-of select="@id"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:value-of select="$current-h2"/>
-                    </xsl:otherwise>
-                  </xsl:choose>
-                </xsl:attribute>
-                <fo:bookmark-title>
-                  <xsl:value-of select="."/>
-                </fo:bookmark-title>
-                <xsl:for-each select="following-sibling::h3">
-                  <xsl:variable name="current-h3" select="generate-id()"/>
-                  <xsl:if 
-                    test="generate-id(preceding-sibling::h2[1]) = $current-h2">
-                    <fo:bookmark starting-state="hide">
-                      <xsl:attribute name="internal-destination">
+    <xsl:template name="generate-bookmarks">
+        <fo:bookmark-tree>
+            <fo:bookmark internal-destination="TableOfContents">
+                <fo:bookmark-title>Table of Contents</fo:bookmark-title>
+            </fo:bookmark>
+            <xsl:for-each select="/html/body//h1">
+                <xsl:variable name="current-h1" select="generate-id()"/>
+                <fo:bookmark starting-state="hide">
+                    <xsl:attribute name="internal-destination">
                         <xsl:choose>
-                          <xsl:when test="@id">
-                            <xsl:value-of select="@id"/>
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <xsl:value-of select="$current-h3"/>
-                          </xsl:otherwise>
+                            <xsl:when test="@id">
+                                <xsl:value-of select="@id"/>
+                            </xsl:when>
+                            <xsl:when test="name(preceding-sibling::*[1]) = 'a' and
+                              preceding-sibling::*[1][@name]">
+                                <xsl:value-of select="preceding-sibling::*[1]/@name"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="$current-h1"/>
+                            </xsl:otherwise>
                         </xsl:choose>
-                      </xsl:attribute>
-                      <fo:bookmark-title>
+                    </xsl:attribute>
+                    <fo:bookmark-title>
                         <xsl:value-of select="."/>
-                      </fo:bookmark-title>
-                      <xsl:for-each select="following-sibling::h4">
+                    </fo:bookmark-title>
+                    <xsl:for-each select="following-sibling::h2">
+                        <xsl:variable name="current-h2" select="generate-id()"/>
                         <xsl:if 
-                          test="generate-id(preceding-sibling::h3[1]) = $current-h3">
-                          <fo:bookmark starting-state="hide">
-                            <xsl:attribute name="internal-destination">
-                              <xsl:choose>
-                                <xsl:when test="@id">
-                                  <xsl:value-of select="@id"/>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                  <xsl:value-of select="generate-id()"/>
-                                </xsl:otherwise>
-                              </xsl:choose>
-                            </xsl:attribute>
-                            <fo:bookmark-title>
-                              <xsl:value-of select="."/>
-                            </fo:bookmark-title>
-                          </fo:bookmark>
+                            test="generate-id(preceding-sibling::h1[1]) = $current-h1">
+                            <fo:bookmark starting-state="hide">
+                                <xsl:attribute name="internal-destination">
+                                    <xsl:choose>
+                                        <xsl:when test="@id">
+                                            <xsl:value-of select="@id"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="$current-h2"/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:attribute>
+                                <fo:bookmark-title>
+                                    <xsl:value-of select="."/>
+                                </fo:bookmark-title>
+                                <xsl:for-each select="following-sibling::h3">
+                                    <xsl:variable name="current-h3" select="generate-id()"/>
+                                    <xsl:if 
+                                        test="generate-id(preceding-sibling::h2[1]) = $current-h2">
+                                        <fo:bookmark starting-state="hide">
+                                            <xsl:attribute name="internal-destination">
+                                                <xsl:choose>
+                                                    <xsl:when test="@id">
+                                                        <xsl:value-of select="@id"/>
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        <xsl:value-of select="$current-h3"/>
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
+                                            </xsl:attribute>
+                                            <fo:bookmark-title>
+                                                <xsl:value-of select="."/>
+                                            </fo:bookmark-title>
+                                            <xsl:for-each select="following-sibling::h4">
+                                                <xsl:if 
+                                                    test="generate-id(preceding-sibling::h3[1]) = $current-h3">
+                                                    <fo:bookmark starting-state="hide">
+                                                        <xsl:attribute name="internal-destination">
+                                                            <xsl:choose>
+                                                                <xsl:when test="@id">
+                                                                    <xsl:value-of select="@id"/>
+                                                                </xsl:when>
+                                                                <xsl:otherwise>
+                                                                    <xsl:value-of select="generate-id()"/>
+                                                                </xsl:otherwise>
+                                                            </xsl:choose>
+                                                        </xsl:attribute>
+                                                        <fo:bookmark-title>
+                                                            <xsl:value-of select="."/>
+                                                        </fo:bookmark-title>
+                                                    </fo:bookmark>
+                                                </xsl:if>
+                                            </xsl:for-each>
+                                        </fo:bookmark>
+                                    </xsl:if>
+                                </xsl:for-each>
+                            </fo:bookmark>
                         </xsl:if>
-                      </xsl:for-each>
-                    </fo:bookmark>
-                  </xsl:if>
-                </xsl:for-each>
-              </fo:bookmark>
-            </xsl:if>
-          </xsl:for-each>
-        </fo:bookmark>
-      </xsl:for-each>
-    </fo:bookmark-tree>
-  </xsl:template>
+                    </xsl:for-each>
+                </fo:bookmark>
+            </xsl:for-each>
+        </fo:bookmark-tree>
+    </xsl:template>
 
-  <!-- ============================================
+    <!-- ============================================
     This template generates an <fo:table-column>
     element for each token in the cols attribute of
     the HTML <table> tag.  The template processes
@@ -1710,32 +1704,32 @@
     rest of the string. 
     =============================================== -->
 
-  <xsl:template name="build-columns">
-    <xsl:param name="cols"/>
+    <xsl:template name="build-columns">
+        <xsl:param name="cols"/>
 
-    <xsl:if test="string-length(normalize-space($cols))">
-      <xsl:variable name="next-col">
-        <xsl:value-of select="substring-before($cols, ' ')"/>
-      </xsl:variable>
-      <xsl:variable name="remaining-cols">
-        <xsl:value-of select="substring-after($cols, ' ')"/>
-      </xsl:variable>
-      <xsl:choose>
-        <xsl:when test="contains($next-col, 'pt')">
-          <fo:table-column column-width="{$next-col}"/>
-        </xsl:when>
-        <xsl:when test="number($next-col) &gt; 0">
-          <fo:table-column column-width="{concat($next-col, 'pt')}"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <fo:table-column column-width="50pt"/>
-        </xsl:otherwise>
-      </xsl:choose>
+        <xsl:if test="string-length(normalize-space($cols))">
+            <xsl:variable name="next-col">
+                <xsl:value-of select="substring-before($cols, ' ')"/>
+            </xsl:variable>
+            <xsl:variable name="remaining-cols">
+                <xsl:value-of select="substring-after($cols, ' ')"/>
+            </xsl:variable>
+            <xsl:choose>
+                <xsl:when test="contains($next-col, 'pt')">
+                    <fo:table-column column-width="{$next-col}"/>
+                </xsl:when>
+                <xsl:when test="number($next-col) &gt; 0">
+                    <fo:table-column column-width="{concat($next-col, 'pt')}"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <fo:table-column column-width="50pt"/>
+                </xsl:otherwise>
+            </xsl:choose>
 
-      <xsl:call-template name="build-columns">
-        <xsl:with-param name="cols" select="concat($remaining-cols, ' ')"/>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
+            <xsl:call-template name="build-columns">
+                <xsl:with-param name="cols" select="concat($remaining-cols, ' ')"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
 
 </xsl:stylesheet>

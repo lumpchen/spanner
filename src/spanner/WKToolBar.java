@@ -23,6 +23,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
@@ -53,6 +54,7 @@ public class WKToolBar extends GridPane {
     private WKBrowser browser;
     private ToolBar bar1;
     private ToolBar bar2;
+    private ToolBar bar3;
     private ResourceBundle resources;
     private Button cutButton;
     private Button copyButton;
@@ -139,6 +141,7 @@ public class WKToolBar extends GridPane {
     private static final String INSERT_NEW_LINE_COMMAND = "insertnewline";
     private static final String INSERT_TAB_COMMAND = "inserttab";
     //custom
+    private Button insertVariableButton;
     private Button insertImageButton;
     private Button insertTableButton;
     private boolean updateToolbarStatus = false;
@@ -153,7 +156,9 @@ public class WKToolBar extends GridPane {
         localColumnConstraints.setHgrow(Priority.ALWAYS);
         this.getColumnConstraints().add(localColumnConstraints);
 
-        this.getStyleClass().add("html-editor");
+        super.getStyleClass().add("html-editor.css");
+        
+        this.getStyleClass().add("html-editor.css");
         this.bar1 = new ToolBar();
         this.bar1.getStyleClass().add("top-toolbar");
         this.add(this.bar1, 0, 0);
@@ -161,6 +166,11 @@ public class WKToolBar extends GridPane {
         this.bar2 = new ToolBar();
         this.bar2.getStyleClass().add("bottom-toolbar");
         this.add(this.bar2, 0, 1);
+
+        this.bar3 = new ToolBar();
+        this.bar3.getStyleClass().add("bottom-toolbar");
+        this.add(this.bar3, 0, 2);
+
         this.populateToolbars();
 
         this.initEventHandler();
@@ -322,6 +332,13 @@ public class WKToolBar extends GridPane {
                 handleInsertTableEvent((ActionEvent) t);
             }
         });
+
+        this.insertVariableButton.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event t) {
+                handleInsertVariableEvent((ActionEvent) t);
+            }
+        });
     }
 
     private void handleInsertImageEvent(ActionEvent e) {
@@ -364,6 +381,9 @@ public class WKToolBar extends GridPane {
             Logger.getLogger(WKToolBar.class.getName()).log(Level.SEVERE, null, ex);
             FXOptionPane.showMessageDialog(stage, "", FXOptionPane.Title.ERROR, ex);
         }
+    }
+
+    private void handleInsertVariableEvent(ActionEvent e) {
     }
 
     private void handleKeyPressedEvent(final KeyEvent e) {
@@ -662,9 +682,9 @@ public class WKToolBar extends GridPane {
         this.bgColorPicker.setFocusTraversable(false);
         this.bar1.getItems().add(bgColorPicker);
 
-        this.bar1.getItems().add(new Separator());
-        this.insertImageButton = addButton(this.bar1, this.resources.getString("insertImageIcon"), this.resources.getString("insertImage"));
-        this.insertTableButton = addButton(this.bar1, this.resources.getString("insertTableIcon"), this.resources.getString("insertTable"));
+        this.insertVariableButton = addButton(this.bar3, this.resources.getString("insertVariableIcon"), this.resources.getString("insertVariable"));
+        this.insertImageButton = addButton(this.bar3, this.resources.getString("insertImageIcon"), this.resources.getString("insertImage"));
+        this.insertTableButton = addButton(this.bar3, this.resources.getString("insertTableIcon"), this.resources.getString("insertTable"));
 
         this.formatComboBox = new ComboBox();
         this.formatComboBox.getStyleClass().add("font-menu-button");
@@ -785,6 +805,7 @@ public class WKToolBar extends GridPane {
                 bgColorPicker.setDisable(!enable);
                 insertImageButton.setDisable(!enable);
                 insertTableButton.setDisable(!enable);
+                insertVariableButton.setDisable(!enable);
             }
         });
     }

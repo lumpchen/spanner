@@ -5,7 +5,7 @@
  ********************************************************************************/
 
 .html-editor {
-    -fx-skin: "com.sun.javafx.scene.web.skin.HTMLEditor";
+    -fx-skin: "spanner.WKToolBar";
     -fx-border-width: 1;
     -fx-border-style: solid;
     -fx-padding: 0;
@@ -118,20 +118,6 @@ to the top and bottom -fx-padding values of the parent toolbar. */
 .html-editor .font-menu-button .label{
    -fx-padding: 0.166667em 0.5em 0.25em 0.5em; /* 2 6 3 6 */
 }
-
-.popup-button {
-   -fx-skin: "com.sun.javafx.scene.web.skin.PopupButtonSkin";
-   -fx-label-padding: 0.25em 0.25em 0.25em 0.5em; /* 3 3 3 6 */
-   -fx-background-color: -fx-shadow-highlight-color,
-       -fx-outer-border,
-       -fx-inner-border,
-       linear-gradient(to bottom,  derive(-fx-color, 80%) 0%, derive(-fx-color, -10%) 100%);
-}
-
-.popup-control {
-   -fx-skin: "com.sun.javafx.scene.web.skin.PopupButtonPopupControlSkin";
-}
-
 
 .color-picker {
     -fx-spacing: 10;
