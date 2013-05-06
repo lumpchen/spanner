@@ -8,6 +8,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.w3c.tidy.Tidy;
 import spanner.WKException;
 
 /**
@@ -36,6 +38,18 @@ public class FopAgent {
         OutputStream out = null;
         try {
             InputStream htmlStream = new ByteArrayInputStream(htmlContent.getBytes("utf-8"));
+
+            File tidy = File.createTempFile("spanner_", ".html");
+            OutputStream fos = new FileOutputStream(tidy);
+            Tidy T = new Tidy();
+            T.setTidyMark(false);
+            T.setWord2000(true);
+            T.setXmlOut(true);
+            T.parseDOM(htmlStream, fos);
+            fos.close();
+
+            htmlStream = new FileInputStream(tidy);
+
             InputStream xsltStream = FopAgent.class.getResourceAsStream("xhtml-to-xslfo.xsl");
 
             out = new BufferedOutputStream(new FileOutputStream(new File(dst)));

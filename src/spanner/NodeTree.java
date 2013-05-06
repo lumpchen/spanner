@@ -21,7 +21,7 @@ public class NodeTree extends TreeView {
 
     public NodeTree() {
         super();
-        this.root = new TreeItem<>("document");
+        this.root = new TreeItem<>("DOM Explorer");
         this.setShowRoot(true);
         this.setRoot(this.root);
         this.root.setExpanded(true);

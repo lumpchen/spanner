@@ -81,7 +81,7 @@ public class WKEditor extends Region {
         domTreePane.setContent(this.nodeTree);
 
         TitledPane stylePane = new TitledPane();
-        stylePane.setText("Style");
+        stylePane.setText("Stylesheets");
 
         final Accordion accordion = new Accordion();
         accordion.getPanes().add(domTreePane);
