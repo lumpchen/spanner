@@ -49,7 +49,7 @@ public class WKEditor extends Region {
 
         final Tab tab1 = new Tab();
         tab1.setText("   Editor   ");
-        tab1.setContent(this.browser.getView());
+        tab1.setContent(this.browser);
 
         final Tab tab2 = new Tab();
         tab2.setText("   HTML   ");

@@ -9,6 +9,7 @@ import com.sun.webpane.platform.event.WCFocusEvent;
 import com.sun.webpane.sg.Accessor;
 import com.sun.webpane.webkit.dom.HTMLImageElementImpl;
 import com.sun.webpane.webkit.dom.TextImpl;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -35,7 +37,7 @@ import org.w3c.dom.html.HTMLTableElement;
  *
  * @author lim16
  */
-public class WKBrowser {
+public class WKBrowser extends StackPane {
 
     private Stage stage;
     private WebView webView;
@@ -43,11 +45,15 @@ public class WKBrowser {
     private WebPage webPage;
     private NodeTree nodeTree;
     private HTMLTextPane htmlTextPane;
+    private BrowserOverlay overlay;
     public final String INIT_HTML = "<html><body><head></head><p>Hello</p><body></html>";
 
     public WKBrowser(Stage stage) {
         this.stage = stage;
+
         this.webView = new WebView();
+        this.getChildren().add(this.webView);
+
         this.webEngine = this.webView.getEngine();
         this.webPage = Accessor.getPageFor(this.webEngine);
 
@@ -61,6 +67,10 @@ public class WKBrowser {
         });
 
         this.webEngine.loadContent(INIT_HTML);
+    }
+
+    public WebView getView() {
+        return this.webView;
     }
 
     public void openFile(File f) {
@@ -86,10 +96,6 @@ public class WKBrowser {
 
     private void contentEditable(HTMLElement node) {
         node.setAttribute("contenteditable", "true");
-    }
-
-    public WebView getView() {
-        return this.webView;
     }
 
     public void setNodeTreeView(NodeTree nodeTree) {
@@ -165,10 +171,6 @@ public class WKBrowser {
         this.webView.requestFocus();
     }
 
-    public boolean isFocused() {
-        return this.webView.isFocused();
-    }
-
     public void insertTableNode(HTMLTableSetting table) throws WKException {
         Object selection = webEngine.executeScript("window.getSelection().focusNode");
         if (selection != null && selection instanceof Node) {
@@ -233,7 +235,6 @@ public class WKBrowser {
                 img.setAttribute("style", "float:" + floating);
 
                 this.addCallbackForImage(img);
-
                 this.insertImageNode((Node) selection, img);
             } catch (Exception e) {
                 throw new WKException(WKNodeBuilder.class, "Failed to insert image.", null);
@@ -245,6 +246,7 @@ public class WKBrowser {
 
     private void addCallbackForImage(Element img) {
         img.setAttribute("draggable", "false");
+        img.setAttribute("onclick", "app.onclickImage()");
         img.setAttribute("ondblclick", "app.ondblclickImage()");
         img.setAttribute("onmouseover", "app.onmouseoverImage()");
         img.setAttribute("onmouseout", "app.onmouseoutImage()");
@@ -302,10 +304,68 @@ public class WKBrowser {
         return null;
     }
 
+    private void paintOverlap(HTMLImageElementImpl selImg) {
+        this.overlay = new BrowserOverlay(this);
+        double w = this.webView.getWidth();
+        double h = this.webView.getHeight();
+
+        this.overlay.setSize(w, h);
+        this.overlay.drawRectForImage(selImg);
+        this.getChildren().add(this.overlay);
+        this.overlay.requestFocus();
+    }
+
+    public void onDoubleClickImage(HTMLImageElementImpl selImg) {
+        if (selImg == null) {
+            return;
+        }
+        InsertImageDlg dlg;
+        try {
+            dlg = new InsertImageDlg(stage);
+            dlg.setImage(selImg);
+            dlg.showAndWait();
+            if (dlg.isOk()) {
+                String src = dlg.getSrc();
+                int w = dlg.getImageWidth();
+                int h = dlg.getImageHeight();
+
+                selImg.setSrc(src);
+                selImg.setWidth(w + "");
+                selImg.setHeight(h + "");
+                selImg.getStyle().setProperty("float", dlg.getFloat(), "");
+                this.retireOverlap();
+                this.paintOverlap(selImg);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(WKBrowser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void onResizeImage(HTMLImageElementImpl selImg, Rectangle rect) {
+        if (selImg == null || rect == null) {
+            return;
+        }
+        selImg.setWidth(rect.width + "");
+        selImg.setHeight(rect.height + "");
+    }
+
+    public void retireOverlap() {
+        this.getChildren().remove(this.overlay);
+        this.webView.requestFocus();
+    }
+
     public class JavaApp {
 
         private HTMLImageElementImpl selImg;
         private String opacity;
+
+        public void onclickImage() {
+            HTMLImageElementImpl selImg = getSelectedImage();
+            if (selImg == null) {
+                return;
+            }
+            paintOverlap(selImg);
+        }
 
         public void ondblclickImage() {
             HTMLImageElementImpl selImg = getSelectedImage();
