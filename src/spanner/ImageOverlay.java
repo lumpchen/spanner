@@ -7,28 +7,33 @@ package spanner;
 import com.sun.webpane.webkit.dom.HTMLImageElementImpl;
 import java.awt.Point;
 import java.awt.Rectangle;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 /**
  *
  * @author lim16
  */
-public class BrowserOverlay extends Canvas {
+public class ImageOverlay extends Canvas {
 
     private GraphicsContext gc;
     private Rectangle rect;
     private WKBrowser browser;
     private Rectangle[] cornerRects = new Rectangle[4];
     private HTMLImageElementImpl selImg;
+    private boolean dragged;
+    private Point.Double pressed;
 
-    public BrowserOverlay(WKBrowser browser) {
+    public ImageOverlay(WKBrowser browser) {
         super();
+
+        this.setBlendMode(BlendMode.MULTIPLY);
 
         this.browser = browser;
         this.gc = this.getGraphicsContext2D();
@@ -66,10 +71,8 @@ public class BrowserOverlay extends Canvas {
     }
 
     public void clearGC() {
-        Paint p = this.gc.getStroke();
-        this.gc.setStroke(Color.WHITE);
-        this.drawRect();
-        this.gc.setStroke(p);
+        gc.setFill(Color.rgb(255, 255, 255, 1));
+        this.gc.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
 
     public void setSize(double width, double height) {
@@ -106,35 +109,33 @@ public class BrowserOverlay extends Canvas {
         int rx = left - dw;
         int ry = top - dw;
         this.cornerRects[0] = new Rectangle(rx, ry, w, w);
-        this.gc.rect(rx, ry, w, w);
 
         rx = left + right - dw;
         ry = top - dw;
         this.cornerRects[1] = new Rectangle(rx, ry, w, w);
-        this.gc.rect(rx, ry, w, w);
 
         rx = left - dw;
         ry = top + bottom - dw;
         this.cornerRects[2] = new Rectangle(rx, ry, w, w);
-        this.gc.rect(rx, ry, w, w);
 
         rx = left + right - dw;
         ry = top + bottom - dw;
         this.cornerRects[3] = new Rectangle(rx, ry, w, w);
-        this.gc.rect(rx, ry, w, w);
 
         for (int i = 0; i < 4; i++) {
             this.drawRect(this.cornerRects[i]);
         }
-
-        this.gc.stroke();
     }
 
     private void drawRect(Rectangle rect) {
-        this.gc.rect(rect.x, rect.y, rect.width, rect.height);
+        this.gc.strokeRect(rect.x, rect.y, rect.width, rect.height);
     }
 
     private void onMouseClicked(MouseEvent me) {
+        if (this.dragged) {
+            this.dragged = false;
+            return;
+        }
         if (rect != null) {
             double x = me.getX();
             double y = me.getY();
@@ -153,36 +154,46 @@ public class BrowserOverlay extends Canvas {
         this.browser.retireOverlap();
     }
 
-    private void onMouseDragged(MouseEvent me) {
+    private void onMouseDragged(final MouseEvent me) {
         if (this.pressed == null || this.rect == null) {
             return;
         }
 
-        int x = (int) (me.getX() + 0.5);
-        int y = (int) (me.getY() + 0.5);
+        this.dragged = true;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                clearGC();
 
-//        rect.width = x - rect.x;
-//        rect.height = y - rect.y;
-//        this.clearGC();
-//        this.drawRect();
+                int x = (int) (me.getX() + 0.5);
+                int y = (int) (me.getY() + 0.5);
+
+                rect.width = x - rect.x;
+                rect.height = y - rect.y;
+                drawRect();
+                browser.onResizeImage(selImg, rect);
+            }
+        });
     }
 
-    private void onMouseReleased(MouseEvent me) {
+    private void onMouseReleased(final MouseEvent me) {
         if (this.pressed == null || this.rect == null) {
             return;
         }
-        this.clearGC();
+        if (!this.dragged) {
+            return;
+        }
+
+        clearGC();
 
         int x = (int) (me.getX() + 0.5);
         int y = (int) (me.getY() + 0.5);
 
         rect.width = x - rect.x;
         rect.height = y - rect.y;
-        this.drawRect();
-        this.browser.onResizeImage(selImg, rect);
-
+        drawRect();
+        browser.onResizeImage(selImg, rect);
     }
-    private Point.Double pressed;
 
     private void onMousePressed(MouseEvent me) {
         if (rect == null) {

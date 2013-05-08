@@ -8,6 +8,7 @@ import com.sun.webpane.platform.WebPage;
 import com.sun.webpane.platform.event.WCFocusEvent;
 import com.sun.webpane.sg.Accessor;
 import com.sun.webpane.webkit.dom.HTMLImageElementImpl;
+import com.sun.webpane.webkit.dom.HTMLTableElementImpl;
 import com.sun.webpane.webkit.dom.TextImpl;
 import java.awt.Rectangle;
 import java.io.File;
@@ -45,7 +46,7 @@ public class WKBrowser extends StackPane {
     private WebPage webPage;
     private NodeTree nodeTree;
     private HTMLTextPane htmlTextPane;
-    private BrowserOverlay overlay;
+    private ImageOverlay overlay;
     public final String INIT_HTML = "<html><body><head></head><p>Hello</p><body></html>";
 
     public WKBrowser(Stage stage) {
@@ -83,7 +84,7 @@ public class WKBrowser extends StackPane {
         this.contentEditable(body);
 
         JSObject window = (JSObject) webEngine.executeScript("window");
-        window.setMember("app", new JavaApp());
+        window.setMember("app", new JSCallback());
 
         if (this.nodeTree != null) {
             this.nodeTree.showDom(doc);
@@ -178,8 +179,7 @@ public class WKBrowser extends StackPane {
             HTMLTableElement tableEle = (HTMLTableElement) doc.createElement("table");
             tableEle.setWidth("400");
             tableEle.setTitle("23423");
-            tableEle.setBgColor("red");
-            tableEle.setBorder("5");
+            tableEle.setBorder("2");
             Element tr = doc.createElement("tr");
             tr.appendChild(doc.createTextNode("1111"));
             tableEle.appendChild(tr);
@@ -193,6 +193,8 @@ public class WKBrowser extends StackPane {
             tableEle.appendChild(tr);
 
             insertTableNode((Node) selection, tableEle);
+
+            addCallbackForTable(tableEle);
         } else {
             throw new WKException(WKNodeBuilder.class, "Not found insertion point.", null);
         }
@@ -247,9 +249,15 @@ public class WKBrowser extends StackPane {
     private void addCallbackForImage(Element img) {
         img.setAttribute("draggable", "false");
         img.setAttribute("onclick", "app.onclickImage()");
-        img.setAttribute("ondblclick", "app.ondblclickImage()");
         img.setAttribute("onmouseover", "app.onmouseoverImage()");
         img.setAttribute("onmouseout", "app.onmouseoutImage()");
+    }
+
+    private void addCallbackForTable(Element table) {
+        table.setAttribute("draggable", "false");
+        table.setAttribute("onclick", "app.onclickTable()");
+        table.setAttribute("onmouseover", "app.onmouseoverTable()");
+        table.setAttribute("onmouseout", "app.onmouseoutTable()");
     }
 
     private void insertImageNode(Node focusNode, Element img) {
@@ -305,7 +313,7 @@ public class WKBrowser extends StackPane {
     }
 
     private void paintOverlap(HTMLImageElementImpl selImg) {
-        this.overlay = new BrowserOverlay(this);
+        this.overlay = new ImageOverlay(this);
         double w = this.webView.getWidth();
         double h = this.webView.getHeight();
 
@@ -354,8 +362,24 @@ public class WKBrowser extends StackPane {
         this.webView.requestFocus();
     }
 
-    public class JavaApp {
+    private HTMLTableElementImpl getSelectedTable() {
+        Object e = this.webEngine.executeScript("window.event.type");
+        if (e == null) {
+            return null;
+        }
 
+        Object srcEle = this.webEngine.executeScript("window.event.srcElement");
+        if (srcEle != null) {
+            if (srcEle instanceof HTMLTableElementImpl) {
+                return (HTMLTableElementImpl) srcEle;
+            }
+        }
+        return null;
+    }
+
+    public class JSCallback {
+
+        private HTMLTableElementImpl selTable;
         private HTMLImageElementImpl selImg;
         private String opacity;
 
@@ -365,31 +389,6 @@ public class WKBrowser extends StackPane {
                 return;
             }
             paintOverlap(selImg);
-        }
-
-        public void ondblclickImage() {
-            HTMLImageElementImpl selImg = getSelectedImage();
-            if (selImg == null) {
-                return;
-            }
-            InsertImageDlg dlg;
-            try {
-                dlg = new InsertImageDlg(stage);
-                dlg.setImage(selImg);
-                dlg.showAndWait();
-                if (dlg.isOk()) {
-                    String src = dlg.getSrc();
-                    int w = dlg.getImageWidth();
-                    int h = dlg.getImageHeight();
-
-                    selImg.setSrc(src);
-                    selImg.setWidth(w + "");
-                    selImg.setHeight(h + "");
-                    selImg.getStyle().setProperty("float", dlg.getFloat(), "");
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(WKBrowser.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
 
         public void onmouseoverImage() {
@@ -418,6 +417,35 @@ public class WKBrowser extends StackPane {
                 selImg.getStyle().setProperty("opacity", opacity, "");
             } else {
                 selImg.getStyle().removeProperty("opacity");
+            }
+        }
+
+        public void onmouseoverTable() {
+            selTable = getSelectedTable();
+            if (selTable == null) {
+                return;
+            }
+            opacity = selTable.getStyle().getPropertyValue("opacity");
+            if (opacity == null) {
+                selTable.getStyle().setProperty("opacity", "0.5", "");
+            } else {
+                Integer op = Integer.parseInt(opacity);
+                if (op <= 0.5) {
+                    selTable.getStyle().setProperty("opacity", op * 2 + "", "");
+                } else {
+                    selTable.getStyle().setProperty("opacity", op / 2 + "", "");
+                }
+            }
+        }
+
+        public void onmouseoutTable() {
+            if (selTable == null) {
+                return;
+            }
+            if (opacity != null) {
+                selTable.getStyle().setProperty("opacity", opacity, "");
+            } else {
+                selTable.getStyle().removeProperty("opacity");
             }
         }
     }
