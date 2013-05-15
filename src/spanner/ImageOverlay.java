@@ -8,79 +8,34 @@ import com.sun.webpane.webkit.dom.HTMLImageElementImpl;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import org.w3c.dom.html.HTMLElement;
 
 /**
  *
  * @author lim16
  */
-public class ImageOverlay extends Canvas {
+public class ImageOverlay extends Overlay {
 
-    private GraphicsContext gc;
     private Rectangle rect;
-    private WKBrowser browser;
     private Rectangle[] cornerRects = new Rectangle[4];
     private HTMLImageElementImpl selImg;
     private boolean dragged;
     private Point.Double pressed;
 
     public ImageOverlay(WKBrowser browser) {
-        super();
-
-        this.setBlendMode(BlendMode.MULTIPLY);
-
-        this.browser = browser;
-        this.gc = this.getGraphicsContext2D();
-        this.gc.setStroke(Color.RED);
-
-        this.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                onMouseMoved(me);
-            }
-        });
-
-        this.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                onMousePressed(me);
-            }
-        });
-
-        this.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                onMouseReleased(me);
-            }
-        });
-
-        this.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                onMouseDragged(me);
-            }
-        });
-
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                onMouseClicked(me);
-            }
-        });
+        super(browser);
     }
 
-    public void clearGC() {
-        gc.setFill(Color.rgb(255, 255, 255, 1));
-        this.gc.fillRect(0, 0, this.getWidth(), this.getHeight());
+    @Override
+    void draw(HTMLElement ele) {
+        if (ele instanceof HTMLImageElementImpl) {
+            drawRectForImage((HTMLImageElementImpl) ele);
+        }
     }
 
-    public void setSize(double width, double height) {
-        this.setWidth(width);
-        this.setHeight(width);
-    }
-
-    public void drawRectForImage(HTMLImageElementImpl selImg) {
+    private void drawRectForImage(HTMLImageElementImpl selImg) {
         this.selImg = selImg;
         int top = selImg.getY();
         int left = selImg.getX();
@@ -127,11 +82,11 @@ public class ImageOverlay extends Canvas {
         }
     }
 
-    private void drawRect(Rectangle rect) {
+    void drawRect(Rectangle rect) {
         this.gc.strokeRect(rect.x, rect.y, rect.width, rect.height);
     }
 
-    private void onMouseClicked(MouseEvent me) {
+    void onMouseClicked(MouseEvent me) {
         if (this.dragged) {
             this.dragged = false;
             return;
@@ -154,7 +109,7 @@ public class ImageOverlay extends Canvas {
         this.browser.retireOverlap();
     }
 
-    private void onMouseDragged(final MouseEvent me) {
+    void onMouseDragged(final MouseEvent me) {
         if (this.pressed == null || this.rect == null) {
             return;
         }
@@ -176,7 +131,7 @@ public class ImageOverlay extends Canvas {
         });
     }
 
-    private void onMouseReleased(final MouseEvent me) {
+    void onMouseReleased(final MouseEvent me) {
         if (this.pressed == null || this.rect == null) {
             return;
         }
@@ -195,7 +150,7 @@ public class ImageOverlay extends Canvas {
         browser.onResizeImage(selImg, rect);
     }
 
-    private void onMousePressed(MouseEvent me) {
+    void onMousePressed(MouseEvent me) {
         if (rect == null) {
             return;
         }
@@ -213,7 +168,7 @@ public class ImageOverlay extends Canvas {
         }
     }
 
-    private void onMouseMoved(MouseEvent me) {
+    void onMouseMoved(MouseEvent me) {
         if (rect == null) {
             return;
         }

@@ -318,7 +318,7 @@ public class WKBrowser extends StackPane {
         double h = this.webView.getHeight();
 
         this.overlay.setSize(w, h);
-        this.overlay.drawRectForImage(selImg);
+        this.overlay.draw(selImg);
         this.getChildren().add(this.overlay);
         this.overlay.requestFocus();
     }
