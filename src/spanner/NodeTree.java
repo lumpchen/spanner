@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.html.HTMLImageElement;
+import org.w3c.dom.html.HTMLTableElement;
 
 /**
  *
@@ -17,6 +19,7 @@ import org.w3c.dom.NodeList;
  */
 public class NodeTree extends TreeView {
 
+    private JSCallback jsCallback;
     private TreeItem<String> root;
 
     public NodeTree() {
@@ -25,6 +28,10 @@ public class NodeTree extends TreeView {
         this.setShowRoot(true);
         this.setRoot(this.root);
         this.root.setExpanded(true);
+    }
+
+    public void setJSCallback(JSCallback jsCallback) {
+        this.jsCallback = jsCallback;
     }
 
     public void showDom(Document doc) {
@@ -49,6 +56,12 @@ public class NodeTree extends TreeView {
         for (int i = 0, n = nodeList.getLength(); i < n; i++) {
             Node child = nodeList.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
+                if (child instanceof HTMLImageElement) {
+                    this.jsCallback.addCallbackForImage((Element) child);
+                } else if (child instanceof HTMLTableElement) {
+                    this.jsCallback.addCallbackForTable((Element) child);
+                }
+
                 TreeItem<String> item = new TreeItem<>(child.getNodeName());
                 parent.getChildren().add(item);
                 showNode(child, item);

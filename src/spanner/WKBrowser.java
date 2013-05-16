@@ -46,7 +46,8 @@ public class WKBrowser extends StackPane {
     private WebPage webPage;
     private NodeTree nodeTree;
     private HTMLTextPane htmlTextPane;
-    private ImageOverlay overlay;
+    private Overlay overlay;
+    private JSCallback jsCallback;
     public final String INIT_HTML = "<html><body><head></head><p>Hello</p><body></html>";
 
     public WKBrowser(Stage stage) {
@@ -57,6 +58,8 @@ public class WKBrowser extends StackPane {
 
         this.webEngine = this.webView.getEngine();
         this.webPage = Accessor.getPageFor(this.webEngine);
+
+        this.jsCallback = new JSCallback(this);
 
         this.webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
             @Override
@@ -84,9 +87,10 @@ public class WKBrowser extends StackPane {
         this.contentEditable(body);
 
         JSObject window = (JSObject) webEngine.executeScript("window");
-        window.setMember("app", new JSCallback());
+        window.setMember("app", this.jsCallback);
 
         if (this.nodeTree != null) {
+            this.nodeTree.setJSCallback(jsCallback);
             this.nodeTree.showDom(doc);
         }
 
@@ -298,18 +302,42 @@ public class WKBrowser extends StackPane {
     }
 
     private HTMLImageElementImpl getSelectedImage() {
-        Object e = this.webEngine.executeScript("window.event.type");
-        if (e == null) {
-            return null;
-        }
-
-        Object srcEle = this.webEngine.executeScript("window.event.srcElement");
+        Object srcEle = this.getSelectObj();
         if (srcEle != null) {
             if (srcEle instanceof HTMLImageElementImpl) {
                 return (HTMLImageElementImpl) srcEle;
             }
         }
         return null;
+    }
+
+    private HTMLTableElementImpl getSelectedTable() {
+        Object srcEle = this.getSelectObj();
+        if (srcEle != null) {
+            if (srcEle instanceof HTMLTableElementImpl) {
+                return (HTMLTableElementImpl) srcEle;
+            }
+        }
+        return null;
+    }
+
+    public Object getSelectObj() {
+        Object e = this.webEngine.executeScript("window.event.type");
+        if (e == null) {
+            return null;
+        }
+        return this.webEngine.executeScript("window.event.srcElement");
+    }
+
+    public void paintOverlap(HTMLElement ele) {
+        if (ele == null) {
+            return;
+        }
+        if (ele instanceof HTMLImageElementImpl) {
+            this.paintOverlap((HTMLImageElementImpl) ele);
+        } else if (ele instanceof HTMLTableElementImpl) {
+            this.paintOverlap((HTMLTableElementImpl) ele);
+        }
     }
 
     private void paintOverlap(HTMLImageElementImpl selImg) {
@@ -319,6 +347,19 @@ public class WKBrowser extends StackPane {
 
         this.overlay.setSize(w, h);
         this.overlay.draw(selImg);
+        this.getChildren().add(this.overlay);
+        this.overlay.requestFocus();
+    }
+
+    private void paintOverlap(HTMLTableElementImpl table) {
+        this.overlay = new TableOverlay(this);
+        double w = this.webView.getWidth();
+        double h = this.webView.getHeight();
+
+        Node p = table.getParentNode();
+
+        this.overlay.setSize(w, h);
+        this.overlay.draw(table);
         this.getChildren().add(this.overlay);
         this.overlay.requestFocus();
     }
@@ -360,93 +401,5 @@ public class WKBrowser extends StackPane {
     public void retireOverlap() {
         this.getChildren().remove(this.overlay);
         this.webView.requestFocus();
-    }
-
-    private HTMLTableElementImpl getSelectedTable() {
-        Object e = this.webEngine.executeScript("window.event.type");
-        if (e == null) {
-            return null;
-        }
-
-        Object srcEle = this.webEngine.executeScript("window.event.srcElement");
-        if (srcEle != null) {
-            if (srcEle instanceof HTMLTableElementImpl) {
-                return (HTMLTableElementImpl) srcEle;
-            }
-        }
-        return null;
-    }
-
-    public class JSCallback {
-
-        private HTMLTableElementImpl selTable;
-        private HTMLImageElementImpl selImg;
-        private String opacity;
-
-        public void onclickImage() {
-            HTMLImageElementImpl selImg = getSelectedImage();
-            if (selImg == null) {
-                return;
-            }
-            paintOverlap(selImg);
-        }
-
-        public void onmouseoverImage() {
-            selImg = getSelectedImage();
-            if (selImg == null) {
-                return;
-            }
-            opacity = selImg.getStyle().getPropertyValue("opacity");
-            if (opacity == null) {
-                selImg.getStyle().setProperty("opacity", "0.5", "");
-            } else {
-                Integer op = Integer.parseInt(opacity);
-                if (op <= 0.5) {
-                    selImg.getStyle().setProperty("opacity", op * 2 + "", "");
-                } else {
-                    selImg.getStyle().setProperty("opacity", op / 2 + "", "");
-                }
-            }
-        }
-
-        public void onmouseoutImage() {
-            if (selImg == null) {
-                return;
-            }
-            if (opacity != null) {
-                selImg.getStyle().setProperty("opacity", opacity, "");
-            } else {
-                selImg.getStyle().removeProperty("opacity");
-            }
-        }
-
-        public void onmouseoverTable() {
-            selTable = getSelectedTable();
-            if (selTable == null) {
-                return;
-            }
-            opacity = selTable.getStyle().getPropertyValue("opacity");
-            if (opacity == null) {
-                selTable.getStyle().setProperty("opacity", "0.5", "");
-            } else {
-                Integer op = Integer.parseInt(opacity);
-                if (op <= 0.5) {
-                    selTable.getStyle().setProperty("opacity", op * 2 + "", "");
-                } else {
-                    selTable.getStyle().setProperty("opacity", op / 2 + "", "");
-                }
-            }
-        }
-
-        public void onmouseoutTable() {
-            if (selTable == null) {
-                return;
-            }
-            if (opacity != null) {
-                selTable.getStyle().setProperty("opacity", opacity, "");
-            } else {
-                selTable.getStyle().removeProperty("opacity");
-            }
-        }
     }
 }

@@ -82,10 +82,6 @@ public class ImageOverlay extends Overlay {
         }
     }
 
-    void drawRect(Rectangle rect) {
-        this.gc.strokeRect(rect.x, rect.y, rect.width, rect.height);
-    }
-
     void onMouseClicked(MouseEvent me) {
         if (this.dragged) {
             this.dragged = false;
