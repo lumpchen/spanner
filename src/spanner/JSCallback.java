@@ -51,6 +51,10 @@ public class JSCallback {
     private HTMLTableElementImpl getSelectedTable() {
         Object srcEle = this.browser.getSelectObj();
         if (srcEle != null) {
+            if (srcEle instanceof HTMLImageElementImpl) {
+                return null;
+            }
+
             while (srcEle != null && !(srcEle instanceof HTMLTableElementImpl)) {
                 srcEle = ((Node) srcEle).getParentNode();
             }

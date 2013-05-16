@@ -4,11 +4,15 @@
  */
 package spanner;
 
+import com.sun.webpane.webkit.dom.HTMLTableCellElementImpl;
 import com.sun.webpane.webkit.dom.HTMLTableElementImpl;
+import com.sun.webpane.webkit.dom.HTMLTableRowElementImpl;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javafx.scene.input.MouseEvent;
+import org.w3c.dom.html.HTMLCollection;
 import org.w3c.dom.html.HTMLElement;
+import org.w3c.dom.html.HTMLTableSectionElement;
 
 /**
  *
@@ -20,6 +24,7 @@ public class TableOverlay extends Overlay {
     private HTMLTableElementImpl table;
     private boolean dragged;
     private Point.Double pressed;
+    private CellRect[][] cellArray;
 
     public TableOverlay(WKBrowser browser) {
         super(browser);
@@ -41,15 +46,40 @@ public class TableOverlay extends Overlay {
 
         this.rect = new Rectangle(left, top, width, height);
 
-        this.drawRect();
+        HTMLTableSectionElement head = table.getTHead();
+        HTMLTableSectionElement foot = table.getTFoot();
+
+        HTMLCollection rows = this.table.getRows();
+        for (int r = 0; r < rows.getLength(); r++) {
+            HTMLTableRowElementImpl row = (HTMLTableRowElementImpl) rows.item(r);
+            HTMLCollection cols = row.getCells();
+            for (int c = 0; c < cols.getLength(); c++) {
+                HTMLTableCellElementImpl cell = (HTMLTableCellElementImpl) cols.item(c);
+                this.drawCell(cell);
+            }
+        }
     }
 
-    private void drawRect() {
-        if (rect == null) {
-            return;
-        }
+    private void drawCell(HTMLTableCellElementImpl cell) {
+        int left = table.getOffsetLeft() + cell.getClientLeft() + cell.getOffsetLeft();
+        int top = table.getOffsetTop() + cell.getClientTop() + cell.getOffsetTop();
+        int width = cell.getClientWidth();
+        int height = cell.getClientHeight();
 
+        Rectangle rect = new Rectangle(left, top, width, height);
+        CellRect cellRect = new CellRect(rect, cell);
         this.drawRect(rect);
+    }
+
+    class CellRect {
+
+        Rectangle rect;
+        HTMLTableCellElementImpl cell;
+
+        CellRect(Rectangle rect, HTMLTableCellElementImpl cell) {
+            this.rect = rect;
+            this.cell = cell;
+        }
     }
 
     @Override
