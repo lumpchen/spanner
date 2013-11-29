@@ -4,6 +4,7 @@
  */
 package spanner;
 
+import com.sun.javafx.css.parser.CSSParser;
 import com.sun.webpane.platform.WebPage;
 import com.sun.webpane.platform.event.WCFocusEvent;
 import com.sun.webpane.sg.Accessor;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLElement;

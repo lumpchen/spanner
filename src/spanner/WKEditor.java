@@ -62,7 +62,7 @@ public class WKEditor extends Region {
         left.setCenter(tabPane);
 
         this.splitPane.getItems().addAll(left, createPane());
-        this.splitPane.setDividerPositions(0.7f);
+        this.splitPane.setDividerPositions(0.8f);
 
         this.borderPane = new BorderPane();
         this.borderPane.setCenter(this.splitPane);

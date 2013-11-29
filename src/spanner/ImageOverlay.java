@@ -82,6 +82,7 @@ public class ImageOverlay extends Overlay {
         }
     }
 
+    @Override
     void onMouseClicked(MouseEvent me) {
         if (this.dragged) {
             this.dragged = false;
@@ -105,6 +106,7 @@ public class ImageOverlay extends Overlay {
         this.browser.retireOverlap();
     }
 
+    @Override
     void onMouseDragged(final MouseEvent me) {
         if (this.pressed == null || this.rect == null) {
             return;
@@ -127,6 +129,7 @@ public class ImageOverlay extends Overlay {
         });
     }
 
+    @Override
     void onMouseReleased(final MouseEvent me) {
         if (this.pressed == null || this.rect == null) {
             return;
@@ -146,6 +149,7 @@ public class ImageOverlay extends Overlay {
         browser.onResizeImage(selImg, rect);
     }
 
+    @Override
     void onMousePressed(MouseEvent me) {
         if (rect == null) {
             return;
@@ -164,6 +168,7 @@ public class ImageOverlay extends Overlay {
         }
     }
 
+    @Override
     void onMouseMoved(MouseEvent me) {
         if (rect == null) {
             return;

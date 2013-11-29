@@ -28,33 +28,39 @@ public abstract class Overlay extends Canvas {
 
         this.browser = browser;
         this.gc = this.getGraphicsContext2D();
-        this.gc.setStroke(Color.RED);
+        this.gc.setStroke(Color.BLUE);
+        this.gc.setLineWidth(0.75d);
 
         this.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
             public void handle(MouseEvent me) {
                 onMouseMoved(me);
             }
         });
 
         this.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
             public void handle(MouseEvent me) {
                 onMousePressed(me);
             }
         });
 
         this.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
             public void handle(MouseEvent me) {
                 onMouseReleased(me);
             }
         });
 
         this.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
             public void handle(MouseEvent me) {
                 onMouseDragged(me);
             }
         });
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
             public void handle(MouseEvent me) {
                 onMouseClicked(me);
             }
